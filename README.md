@@ -118,7 +118,7 @@ The Interface System forms the connective core between data generation, model pr
 
 ---
 
-#### 🧪 1. Sensor Data Simulation & Structuring
+### 🧪 1. Sensor Data Simulation & Structuring
 
 * The simulation mimics a real-world CubeSat data feed using Google Colab.
 * Three key environmental parameters are simulated:
@@ -132,10 +132,11 @@ The Interface System forms the connective core between data generation, model pr
   * `sst_weekly_style.csv`
   * `chl_weekly_style.csv`
 * These are stored locally in Colab and synced with Drive for persistence.
+[📄 View Full Code (Data_Preparation.py)](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e761c9a10206027cbcd8195aaa81517b5184788c/Data_Preparation.py)
 
 ---
 
-#### 🔄 2. AI Model Integration (LSTM + XGBoost)
+### 🔄 2. AI Model Integration (LSTM + XGBoost)
 
 * **LSTM Model**:
 
@@ -155,7 +156,7 @@ The Interface System forms the connective core between data generation, model pr
 
 ---
 
-#### 🧩 3. Prediction + Detection Bridge
+### 🧩 3. Prediction + Detection Bridge
 
 * Using `pandas.merge()` the two files are joined by `date`, `lat`, and `lon`.
 * A custom Python function (`classify_fish`) is defined:
@@ -171,7 +172,7 @@ The Interface System forms the connective core between data generation, model pr
 
 ---
 
-#### ☁️ 4. Firebase Integration – Dual Stream
+### ☁️ 4. Firebase Integration – Dual Stream
 
 * Firebase setup includes two paths:
 
@@ -191,7 +192,7 @@ The Interface System forms the connective core between data generation, model pr
 
 ---
 
-#### 🗺️ 5. Real-time Visualization with G Web
+### 🗺️ 5. Real-time Visualization with G Web
 
 * Built using **LabVIEW G Web Development Environment**:
 
@@ -208,7 +209,7 @@ The Interface System forms the connective core between data generation, model pr
 
 ---
 
-#### 📆 6. Historical Web App (Python Flask – Optional Module)
+### 📆 6. Historical Web App (Python Flask – Optional Module)
 
 * A minimal Flask-based web interface was implemented for demo:
 
@@ -220,7 +221,7 @@ The Interface System forms the connective core between data generation, model pr
 
 ---
 
-#### ✅ Interface Highlights
+### ✅ Interface Highlights
 
 * **End-to-end Pipeline**: Sensor → AI → Detection → Dashboard
 * **Randomized Real-Time Updates**: Live map always displays diverse points
