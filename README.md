@@ -115,7 +115,7 @@ This project presents a complete AI-powered system that utilizes satellite data 
 
 ---
 
-### 🌐 Interface System – Full Technical Breakdown
+# 🌐 Interface System – Full Technical Breakdown
 
 The Interface System in our project acts as the *nerve center* that connects simulated sensor data, machine learning predictions, cloud storage, and interactive dashboards. Due to the lack of real mission data, we divided the implementation into **two partial cycles**:
 
