@@ -112,131 +112,189 @@ This project presents a complete AI-powered system that utilizes satellite data 
 * **Hardware**: Raspberry Pi 4, GPS, DHT22, Pi Camera, Solar cells
 
 ---
-# 🌐 Interface System – Detailed Module (Our Team)
 
-The Interface System forms the connective core between data generation, model prediction, classification, and real-time user visualization. Below is a standalone deep dive into the Interface subsystem, decoupled from other project components:
+### 🌐 Interface System – Full Technical Breakdown
 
----
+The Interface System in our project acts as the *nerve center* that connects simulated sensor data, machine learning predictions, cloud storage, and interactive dashboards. Due to the lack of real mission data, we divided the implementation into **two partial cycles**:
 
-### 🧪 1. Sensor Data Simulation & Structuring
+1. **First half** simulates the real sensor layer and its interface with LabVIEW.
+2. **Second half** continues the pipeline using training data, simulating a complete system from preprocessing to real-time and historical visualization.
 
-* The simulation mimics a real-world CubeSat data feed using Google Colab.
-* Three key environmental parameters are simulated:
-
-  * 🌡️ **SST**: Sea Surface Temperature values over time
-  * 🌿 **Chlorophyll-a**: Derived from NDVI-like proxy data
-  * 📍 **GPS**: Static lat/lon pairs for 1100 sea locations
-* A 12-week window is created for each location using sliding sequences (time-series format).
-* Output files:
-
-  * `sst_weekly_style.csv`
-  * `chl_weekly_style.csv`
-* These are stored locally in Colab and synced with Drive for persistence.
-[📄 View Full Code (Data_Preparation.py)](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e761c9a10206027cbcd8195aaa81517b5184788c/Data_Preparation.py)
+![image](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/0-System_Inteface.PNG)
 
 ---
 
-### 🔄 2. AI Model Integration (LSTM + XGBoost)
+### 🔷 **Stage 1: Sensor Simulation + LabVIEW Kit**
 
-* **LSTM Model**:
+#### 🧩 Components:
 
-  * Input: A sequence of 12 weekly readings per point for SST, lat/lon, and quality.
-  * Output: One predicted SST value (for week 13).
-  * Scaling: `MinMaxScaler` is applied before feeding sequences into the LSTM model.
-  * Postprocessing: Inverse scaling used to recover the true SST value.
-* **XGBoost Model**:
+* DHT Sensor (SST – simulated)
+* Camera/NDVI (Chlorophyll – simulated)
+* GPS Module (simulated coordinates)
 
-  * Input: A feature-based tabular record per location (averages, STD, diffs, seasonality).
-  * Output: Log-transformed Chl-a prediction → `exp1m()` used to revert.
-  * Scaling: `StandardScaler` is applied on the features.
-* Both predictions are saved as:
+#### 🛠 Description:
 
-  * `predicted_sst.csv`
-  * `predicted_chlorophyll.csv`
+Since no live mission data was available, we developed a LabVIEW **dashboard kit** to simulate the sensor interface.
 
----
+* The Raspberry Pi streams sensor values to LabVIEW over **TCP/IP**.
+* The dashboard visualizes the values in real-time using indicators and charts.
 
-### 🧩 3. Prediction + Detection Bridge
+⚠️ This phase **does not upload to Firebase** because the data isn’t real yet. Once the mission is live, Firebase upload will be activated.
 
-* Using `pandas.merge()` the two files are joined by `date`, `lat`, and `lon`.
-* A custom Python function (`classify_fish`) is defined:
+#### 🖼 LabVIEW Dashboard :
 
-  * Contains rule ranges for 21 fish species (SST min/max, Chl min/max, max weight).
-  * For each point, it calculates a **score** based on closeness to optimal SST/Chl.
-  * Score is then multiplied by max weight to estimate quantity.
-  * If no range matched → returns `"Others"`, `0` kg.
-* Resulting CSV is:
-
-  * `classified_fish_predictions.csv`
-  * Columns: `date`, `lat`, `lon`, `sst`, `chl-a`, `fish_type`, `estimated_quantity`
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/1-Raspberry%20Pi%20%20and%20LabVIEW%20Interface.png)
 
 ---
 
-### ☁️ 4. Firebase Integration – Dual Stream
+### 🔷 **Stage 2: Synthetic Data → Full Colab Cycle**
 
-* Firebase setup includes two paths:
+#### 🧩 Data Engineering:
 
-  1. `/fishdata` → updated every minute with 20 random rows from latest predictions
-  2. `/fishdata_archive` → full batch uploaded every minute with timestamp
-* Libraries used:
+To simulate real pipeline behavior:
 
-  * `pyrebase`
-  * `firebase_admin`
-* The script includes:
+* Took training data CSVs (`sst_weekly_style.csv`, `chl_weekly_style.csv`)
+* Removed timestamps and injected artificial current dates
+* Generated weekly data per location (12 weeks)
 
-  * Loading classified predictions
-  * Random sampling (`df.sample(20)`) every loop
-  * Writing to local `classified_fish.json`
-  * Pushing to Firebase via `db.reference().set()` and `.push()`
-* The loop runs every 60 seconds using `time.sleep(60)` and resets when reaching EOF.
+Created two engineered DataFrames:
 
----
+* For LSTM: 12-week sequences
+* For XGBoost: feature-extracted snapshots
 
-### 🗺️ 5. Real-time Visualization with G Web
+[🔗_Code](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/Python%20Codes/Data_Preparation.py)
 
-* Built using **LabVIEW G Web Development Environment**:
-
-  * Designed a front-end to fetch and visualize data from `/fishdata`.
-  * Live map displays 20 points, refreshed every minute.
-  * Tooltip on each point displays:
-
-    * 🐠 Fish species
-    * 📦 Estimated quantity
-    * 🌊 Predicted SST
-    * 🍃 Predicted Chl-a
-    * 📍 Coordinates + 📆 date
-* The map updates using built-in Firebase polling without refresh.
+#### 🖼 Full Colab Cycle:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/2-%20Colab%20as%20the%20Core%20Interface.png)
+#### 🖼 Data Engineering output:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/3-%20Data%20Sensors%20%26%20Prediction%20Models%20Interface.png)
 
 ---
 
-### 📆 6. Historical Web App (Python Flask – Optional Module)
+### 🔷 **Stage 3: Model Prediction (LSTM + XGBoost)**
 
-* A minimal Flask-based web interface was implemented for demo:
+#### 🧠 Models:
 
-  * Reads data from `/fishdata_archive` or local archived CSVs
-  * Allows the user to pick a date (via calendar input)
-  * Displays a table with fish locations, types, and quantities for that date
-* Optionally renders a static map with pins (using `folium`)
-* Can be hosted locally or via Render.com for free
+* `lstm_sst.h5` → Predict SST
+* `xgb_chlorophyll.joblib` → Predict Chlorophyll
+
+#### 🛠 Description:
+
+Each model receives its respective preprocessed DataFrame and outputs predictions for week 13.
+
+* Proper scaling applied (`MinMaxScaler`, `StandardScaler`)
+* Results exported to CSV
+
+[🔗_Prediction Code](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/Python%20Codes/Prediction_Interface.py)
+[🔗_Merge Prediction Code outputs](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/Python%20Codes/Prediction_Interface.py)
+
+#### 🖼 prediction outputs:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/3-prediction_output.PNG)
+#### 🖼 Merge prediction outputs:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/4-prediction_file_integration.PNG)
+
 
 ---
 
-### ✅ Interface Highlights
+### 🔷 **Stage 4: Detection & Fish Classification**
 
-* **End-to-end Pipeline**: Sensor → AI → Detection → Dashboard
-* **Randomized Real-Time Updates**: Live map always displays diverse points
-* **Modular Scripts**: Each block (simulation, prediction, upload) can run independently
-* **Firebase-Powered Dashboards**: No need for traditional server setup
-* **Zero Manual Interaction**: Fully automatic once launched from Colab
-* **Free Infrastructure**: Utilized free tiers of Google Colab, Firebase, and G Web
+#### 🐟 Algorithm:
+
+Predicted SST and Chlorophyll are merged by location.
+
+* Classification logic assigns **fish type and quantity**
+* Based on temperature/chlorophyll suitability ranges
+
+[🔗_Detection Algorithm interface ](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/Python%20Codes/Detiction_pridiction_interface.py)
+
+
+#### 🖼 Detection outputs:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/4-%20Prediction%20Data%20%26%20Detection%20Fish%20Interface.png)
+
 
 ---
 
-This interface system bridged the gap between prediction and visualization, transforming raw outputs into interactive insights for environmental intelligence and marine sustainability.
+### 🔷 **Stage 5: Firebase Upload (Live Feed + Archive)**
+
+#### 🔁 Description:
+
+Simulated fish detection results are:
+
+* Streamed to `/fishdata` every minute (latest 20 points)
+* Archived fully in `/fishdata_archive`
+
+This enables both real-time and historical data views.
+
+[🔗_Firebase interface ](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/Python%20Codes/Detiction_pridiction_interface.py)
 
 
-## 📬 Contact
+#### 🖼 Firebase interface outputs:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/5-%20Firebase%20Upload%20Interface(Realtime%20%26%20Archive).png)
 
-**Team Members:** See report cover or project documentation.
+---
 
-**For inquiries:** [example@email.com](mailto:example@email.com)
+### 🔷 **Stage 6: G Web Dashboard (Live Map)**
+
+#### 📍 Tool:
+
+LabVIEW G Web Development (WebVI + Leaflet.js)
+
+#### 🛠 Description:
+
+* Fetches data from Firebase `/fishdata`
+* Renders live Red Sea map with fish markers
+* Marker tooltip shows fish type, quantity, SST, Chl-a, and date
+
+[🔗VI interface](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/Labview_Gweb_Codes/Labview%20and%20RPI%20interface.vi)
+
+
+#### 🖼 G_web Code:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/6-%20G%20Web%20Interface%20(Realtime%20display).png)
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/6-%20G%20Web%20Interface%20(Realtime%20display)1.png)
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/6-%20G%20Web%20Interface%20(Realtime%20display)2.png)
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/6-%20G%20Web%20Interface%20(Realtime%20display)3.png)
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/6-%20G%20Web%20Interface%20(Realtime%20display)4.png)
+
+---
+
+### 🔷 **Stage 7: Web App (Historical Lookup)**
+
+#### 🌐 Tools:
+
+* Python, Flask or Streamlit (Web interface)
+
+#### 🛠 Description:
+
+* User selects date
+* App pulls `/fishdata_archive` entries
+* Displays them in table or map form
+
+#### 🔗 Code:
+
+`/webapp/historical_fish_viewer.py`
+
+#### 🖼 Placeholder for Image:
+
+`[Insert Web App UI screenshot]`
+
+---
+## Final Result 
+interactive real time Map with furue date , sst , chl , fish type and Quantity for every single coordinate
+#### 🖼 G_web Map:
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/real_time_G_web_result2.PNG)
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/real_time_G_web_result1.PNG)
+
+###👾 Preocess Video
+![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/real_time_G_web_result1.PNG)
+
+### ✅ Final Highlights
+
+| Capability            | Description                                                                 |
+| --------------------- | --------------------------------------------------------------------------- |
+| 🚧 Partial Simulation | Divided pipeline: LabVIEW kit (real-time) + full Colab cycle (model output) |
+| 🌐 Real-Time Sync     | Firebase bridges prediction with UI layers                                  |
+| 🧠 Model Integration  | LSTM & XGBoost work in parallel on engineered inputs                        |
+| 🐟 Actionable Output  | Outputs fish type & quantity per point                                      |
+| 📈 Dual Access        | G Web (live) + Web App (historical lookup)                                  |
+
+---
