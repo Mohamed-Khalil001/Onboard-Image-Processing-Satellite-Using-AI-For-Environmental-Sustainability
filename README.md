@@ -1,9 +1,10 @@
 # Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability
+
 # 🐟 Smart Satellite-Based Fish Forecasting System using AI for Environmental Sustainability
 
 ### 🎓 Graduation Project 2024–2025
 
-*Faculty of Navigation Science and space Technology*
+*Faculty of Navigation Science and Space Technology*
 
 ---
 
@@ -50,55 +51,53 @@ This project presents a complete AI-powered system that utilizes satellite data 
 
 ### 🤖 AI Team
 
-* Built LSTM and XGBoost models for SST and chlorophyll prediction.
-* Conducted feature engineering, model training & evaluation (R^2 > 0.97).
-* Developed rule-based classification to estimate fish type & quantity.
-* Evaluated predictions across multiple years for model robustness.
+* Developed LSTM and XGBoost models for SST and chlorophyll prediction.
+* Performed data preprocessing, feature engineering, model training, and evaluation.
+* Achieved high model accuracy (R² > 0.97) across multiple test years.
+* Built fish classification rules and tested output integrity.
 
 ### 💻 Embedded Software Team
 
-* Built Python scripts for collecting sensor data (DHT22, GPS, Camera).
-* Implemented NDVI processing from captured images to estimate chlorophyll.
-* Enabled real-time CSV generation for integration with AI models.
-* Developed local GUI using Tkinter for visual monitoring of fish detection.
+* Built Python scripts to read from DHT22, GPS, and Pi Camera.
+* Simulated NDVI-based chlorophyll estimation from image input.
+* Created a Tkinter GUI for local fish monitoring display.
 
 ### 🔩 Embedded Hardware Team
 
-* Assembled Raspberry Pi with sensors (GPS, DHT22, Pi Camera).
-* Designed the PCB and power systems.
-* Tested circuit reliability, EMI tolerance, and runtime power efficiency.
-* Ensured data collection hardware matched mission requirements.
+* Integrated Raspberry Pi with sensors.
+* Designed PCB and tested for power stability and EMI resistance.
+* Ensured hardware is space-compatible (thermal/vibration tolerances).
 
 ### 🧱 Structural Team
 
-* Designed the 3U CubeSat enclosure.
-* Ran simulations (thermal, stress, vibration) via ANSYS/SolidWorks.
-* Built models for deployable solar panels & mounting supports.
-* Ensured mechanical integration for sensors, boards, and shielding.
+* Designed the 3U CubeSat structure.
+* Simulated mechanical stress and thermal conditions.
+* Integrated deployment mechanism for solar panels.
 
 ### 🛰️ STK & Orbit Design Team
 
-* Designed sun-synchronous orbit (SSO) for Red Sea coverage.
-* Simulated revisit time, coverage area, and ground masks using STK.
-* Provided mission profiles and communication window analysis.
-* Delivered orbital data to synchronize AI/ground station timing.
+* Designed SSO orbit for maximum Red Sea coverage.
+* Simulated coverage and revisit times.
+* Provided ground station visibility windows.
 
 ### 🌐 Interface System Team
 
-* Designed full integration layer using Google Colab, Firebase, and LabVIEW.
-* Simulated sensor input and automated 12-week sequence generation.
-* Integrated LSTM + XGBoost predictions with rule-based detection.
-* Built real-time update pipeline to Firebase (/fishdata, /archive).
-* Developed G Web dashboard + Python web app for live/historical visualization.
+* Built integration pipeline using LabVIEW, Google Colab, and Firebase.
+* Divided implementation into two cycles due to lack of real data:
+
+  * **Cycle 1:** LabVIEW dashboard simulates real-time sensor readings.
+  * **Cycle 2:** Full pipeline run using re-engineered training data.
+* Enabled real-time upload to Firebase and dynamic visualization via G Web.
+* Web App enables historical fish detection exploration.
 
 ---
 
 ## 🧠 Final Outcome
 
-* A fully functional system that mimics a real CubeSat fish-monitoring workflow.
-* Can predict fish type and quantity based on weekly environmental data.
-* Supports field use (offline GUI) and cloud deployment (Firebase/Web).
-* Easily expandable to support new sensors, fish types, or geographic areas.
+* Complete system that emulates CubeSat-based fish monitoring.
+* Can predict fish types & quantities for specific Red Sea regions.
+* Provides real-time and historical outputs.
+* Designed for easy future integration with real mission data.
 
 ---
 
@@ -109,7 +108,10 @@ This project presents a complete AI-powered system that utilizes satellite data 
 * **Visualization**: Tkinter, Folium, G Web VI
 * **Cloud**: Firebase Realtime DB, Google Colab
 * **Simulation Tools**: STK, SolidWorks, ANSYS
-* **Hardware**: Raspberry Pi 4, GPS, DHT22, Pi Camera, Solar cells
+* **Hardware**: Raspberry Pi 4, GPS, DHT22, Pi Camera
+
+---
+
 
 ---
 
@@ -284,8 +286,8 @@ interactive real time Map with furue date , sst , chl , fish type and Quantity f
 ![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/real_time_G_web_result2.PNG)
 ![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/real_time_G_web_result1.PNG)
 
-###👾 Preocess Video
-![](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/e789147c8febb4229b4af19059b2307d246d164c/PICS%20%26%20Simulations/real_time_G_web_result1.PNG)
+### 👾 Preocess Video
+[](https://github.com/Mohamed-Khalil001/Onboard-Image-Processing-Satellite-Using-AI-For-Environmental-Sustainability/blob/0348806eb4b1b3e7058921333223f7229675739a/PICS%20%26%20Simulations/interface_vid.mp4)
 
 ### ✅ Final Highlights
 
