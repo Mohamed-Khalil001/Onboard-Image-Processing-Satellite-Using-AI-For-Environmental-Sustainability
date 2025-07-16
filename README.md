@@ -4,7 +4,8 @@
 
 ### 🎓 Graduation Project 2024–2025
 
-*Faculty of Navigation Science and Space Technology*
+**Faculty of NSST_BSU – Class of 2024/2025,**
+**under the sponsorship of EgSA-Egyptian Space Agency.**
 
 ---
 
